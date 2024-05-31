@@ -106,8 +106,12 @@ def view_balances(account):
 
 def main():
     account = import_account()
-    
     while True:
+        #Round the account numbers
+        account.checkings = round(account.checkings,2)
+        account.savings = round(account.savings,2)
+        account.tithing = round(account.tithing,2)
+        account.savings_to_transfer = round(account.savings_to_transfer,2)
         while True:
             action = 0
             try:
