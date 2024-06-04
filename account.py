@@ -16,6 +16,27 @@ class BankAccount:
         #Error Messages
         self.entry_type_error = "Error: Invalid Entry Type"
         self.out_of_range_error = "Error: Out of Range"
+        self.over_error = "Error: Total Ammount Allocated Per Pay Check Exeeds 100%"
+        
+        self.total_pay_split = 0.5
+        self.total_pay_minus = 0
+        for goal in self.goals:
+            if goal[-2] < 1:
+                self.total_pay_split += goal[-2]
+            else:
+                self.total_pay_minus += goal[-2]
+                
+        self.pay_split = [self.total_pay_split,self.total_pay_minus]
+    
+    def update_pay_split(self):
+        self.total_pay_split = 0.5
+        self.total_pay_minus = 0
+        for goal in self.goals:
+            if goal[-2] < 1:
+                self.total_pay_split += goal[-2]
+            else:
+                self.total_pay_minus += goal[-2]
+        return [self.total_pay_split,self.total_pay_minus]       
 
     def reset_account(self):
         self.checkings = ""
@@ -50,11 +71,10 @@ class BankAccount:
         if os.path.getsize(filename) != 0:
             df = pd.read_csv(filename, header=None)
             bank = df.values.tolist()
-            
             checkings = bank[0][0]
-            savings = bank[0][1]
-            tithing = bank[0][2]
-            savings_to_transfer = bank[0][3]
+            savings = bank[1][0]
+            tithing = bank[2][0]
+            savings_to_transfer = bank[3][0]
         else:
             checkings = 0.0
             savings = 0.0
@@ -92,8 +112,22 @@ class BankAccount:
         # Savings
         self.savings += pay*0.4
         self.savings_to_transfer += pay*0.4
-        # Checkings
-        self.checkings += pay*0.5
+        
+        # Goals
+        total_goal_allocated = 0
+        for goal in self.goals:
+            allocated = goal[-2]
+            # Check if percent
+            if allocated < 1:
+                goal[-1] += pay*allocated
+                total_goal_allocated += allocated*pay
+            else:
+                goal[-1] += allocated
+                total_goal_allocated += allocated
+        # Find remaining and add to checkings
+        self.checkings += (pay*0.5)-total_goal_allocated
+                
+        
         input()
         return self
         
@@ -122,6 +156,7 @@ class BankAccount:
         input()
         
     def create_saving_goal(self):
+        pay_split = self.update_pay_split()
         goal_name = ""
         goal_total = ""
         goal_ammount_per = ""
@@ -135,6 +170,10 @@ class BankAccount:
         while type(goal_ammount_per) != float:
             try:
                 goal_ammount_per = float(input("How much allocated per paycheck (Ammount or Percentage as decimal): "))
+                if goal_ammount_per < 1:
+                    if goal_ammount_per+pay_split[0] > 1:
+                        print(self.over_error)
+                        goal_ammount_per = ""
             except:
                 print(self.entry_type_error)   
         self.goals.append([goal_name,goal_total,goal_ammount_per,0.0]) # 0 is the nothing currently saved
