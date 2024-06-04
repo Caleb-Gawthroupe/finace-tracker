@@ -11,11 +11,10 @@ def main():
     entry_type_error = "Error: Invalid Entry Type"
     out_of_range_error = "Error: Out of Range"
     account = BankAccount.import_account()
-    print(account.goals)
-    print(account.checkings)
     BankAccount.load_saving_goals(account)
     
     while True:
+        os.system('cls')
         #Round the account numbers
         account.checkings = round(account.checkings,2)
         account.savings = round(account.savings,2)
