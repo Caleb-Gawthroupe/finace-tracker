@@ -39,30 +39,43 @@ class BankAccount:
         return [self.total_pay_split,self.total_pay_minus]       
 
     def reset_account(self):
-        self.checkings = ""
-        self.savings = ""
-        self.tithing = ""
-        self.savings_to_transfer = ""
-        while type(self.checkings) != float:
+        self.new_checkings = ""
+        self.new_savings = ""
+        self.new_tithing = ""
+        self.new_savings_to_transfer = ""
+        while type(self.new_checkings) != float:
             try:
-                self.checkings = float(input("Checkings Balance: "))
+                os.system('cls')
+                print(f"Current Checkings : {self.checkings}")
+                self.new_checkings = float(input("Checkings Balance: "))
             except:
                 print(self.entry_type_error)
-        while type(self.savings) != float:
+        while type(self.new_savings) != float:
             try:
-                self.savings = float(input("Savings Balance: "))
+                os.system('cls')
+                print(f"Current Savings : {self.checkings}")
+                self.new_savings = float(input("Savings Balance: "))
             except:
                 print(self.entry_type_error)
-        while type(self.tithing) != float:
+                
+        while type(self.new_tithing) != float:
             try:
-                self.tithing = float(input("Tithing: "))
+                os.system('cls')
+                print(f"Current Tithing : {self.tithing}")
+                self.new_tithing = float(input("Tithing: "))
             except:
                 print(self.entry_type_error)
-        while type(self.savings_to_transfer) != float:
+        while type(self.new_savings_to_transfer) != float:
             try:
-                self.savings_to_transfer = float(input("Savings To Transfer: "))
+                os.system('cls')
+                print(f"Current Savings To Transfer : {self.savings_to_transfer}")
+                self.new_savings_to_transfer = float(input("Savings To Transfer: "))
             except:
                 print(self.entry_type_error)
+        self.checkings = self.new_checkings
+        self.savings = self.new_savings
+        self.tithing = self.new_tithing
+        self.savings_to_transfer = self.new_savings_to_transfer
         return self
                 
     def import_account():
@@ -153,6 +166,7 @@ class BankAccount:
         print("Savings: "+str(self.savings))
         print("Tithing: "+str(self.tithing))
         print("Savings To Transfer: "+str(self.savings_to_transfer))
+        print("Total Account: "+str(round(self.checkings+self.tithing+self.savings_to_transfer,2)))
         input()
         
     def create_saving_goal(self):
@@ -192,4 +206,3 @@ class BankAccount:
             self.goals = df.values.tolist()
         else:
             self.goals = []
-        
